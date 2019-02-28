@@ -43,16 +43,32 @@ impl Rgb24 {
             b: self.b.saturating_sub(other.b),
         }
     }
-    pub fn saturating_scalar_mul(self, scalar: u8) -> Self {
+    pub fn saturating_scalar_mul(self, scalar: u32) -> Self {
+        fn single_channel(channel: u8, scalar: u32) -> u8 {
+            let as_u32 = channel as u32 * scalar;
+            as_u32.min(::std::u8::MAX as u32) as u8
+        }
         Self {
-            r: self.r.saturating_mul(scalar),
-            g: self.g.saturating_mul(scalar),
-            b: self.b.saturating_mul(scalar),
+            r: single_channel(self.r, scalar),
+            g: single_channel(self.g, scalar),
+            b: single_channel(self.b, scalar),
+        }
+    }
+    pub fn scalar_div(self, scalar: u32) -> Self {
+        fn single_channel(channel: u8, scalar: u32) -> u8 {
+            let as_u32 = channel as u32 / scalar;
+            as_u32.min(::std::u8::MAX as u32) as u8
+        }
+        Self {
+            r: single_channel(self.r, scalar),
+            g: single_channel(self.g, scalar),
+            b: single_channel(self.b, scalar),
         }
     }
     pub fn saturating_scalar_mul_div(self, numerator: u32, denominator: u32) -> Self {
         fn single_channel(channel: u8, numerator: u32, denominator: u32) -> u8 {
-            (((channel as u32) * (numerator)) / denominator) as u8
+            let as_u32 = ((channel as u32) * (numerator)) / denominator;
+            as_u32.min(::std::u8::MAX as u32) as u8
         }
         Self {
             r: single_channel(self.r, numerator, denominator),
@@ -92,5 +108,33 @@ mod test {
             rgb24(1, 2, 3).saturating_scalar_mul_div(1500, 1000),
             rgb24(1, 3, 4)
         );
+        assert_eq!(
+            rgb24(1, 2, 3).saturating_scalar_mul_div(1500, 1),
+            rgb24(255, 255, 255)
+        );
+    }
+
+    #[test]
+    fn mul() {
+        assert_eq!(
+            rgb24(20, 40, 60).saturating_scalar_mul(2),
+            rgb24(40, 80, 120),
+        );
+        assert_eq!(
+            rgb24(20, 40, 60).saturating_scalar_mul(10000),
+            rgb24(255, 255, 255),
+        );
+    }
+
+    #[test]
+    fn div() {
+        assert_eq!(rgb24(20, 40, 60).scalar_div(2), rgb24(10, 20, 30));
+        assert_eq!(rgb24(255, 255, 255).scalar_div(256), rgb24(0, 0, 0));
+    }
+
+    #[test]
+    #[should_panic]
+    fn div_by_zero() {
+        rgb24(0, 0, 0).scalar_div(0);
     }
 }
