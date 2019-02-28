@@ -76,6 +76,16 @@ impl Rgb24 {
             b: single_channel(self.b, numerator, denominator),
         }
     }
+    pub fn normalised_mul(self, other: Self) -> Self {
+        fn single_channel(a: u8, b: u8) -> u8 {
+            ((a as u32 * b as u32) / 255) as u8
+        }
+        Self {
+            r: single_channel(self.r, other.r),
+            g: single_channel(self.g, other.g),
+            b: single_channel(self.b, other.b),
+        }
+    }
 }
 
 pub const fn rgb24(r: u8, g: u8, b: u8) -> Rgb24 {
@@ -136,5 +146,17 @@ mod test {
     #[should_panic]
     fn div_by_zero() {
         rgb24(0, 0, 0).scalar_div(0);
+    }
+
+    #[test]
+    fn normalised_mul() {
+        assert_eq!(
+            rgb24(255, 255, 255).normalised_mul(rgb24(1, 2, 3)),
+            rgb24(1, 2, 3)
+        );
+        assert_eq!(
+            rgb24(255, 127, 0).normalised_mul(rgb24(10, 20, 30)),
+            rgb24(10, 9, 0)
+        );
     }
 }
