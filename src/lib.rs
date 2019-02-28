@@ -29,8 +29,43 @@ impl Rgb24 {
             opacity,
         ]
     }
+    pub fn saturating_add(self, other: Self) -> Self {
+        Self {
+            r: self.r.saturating_add(other.r),
+            g: self.g.saturating_add(other.g),
+            b: self.b.saturating_add(other.b),
+        }
+    }
+    pub fn saturating_sub(self, other: Self) -> Self {
+        Self {
+            r: self.r.saturating_sub(other.r),
+            g: self.g.saturating_sub(other.g),
+            b: self.b.saturating_sub(other.b),
+        }
+    }
 }
 
 pub const fn rgb24(r: u8, g: u8, b: u8) -> Rgb24 {
     Rgb24::new(r, g, b)
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn add() {
+        let a = rgb24(255, 0, 200);
+        let b = rgb24(0, 255, 200);
+        let c = a.saturating_add(b);
+        assert_eq!(c, rgb24(255, 255, 255));
+    }
+
+    #[test]
+    fn sub() {
+        let a = rgb24(255, 0, 200);
+        let b = rgb24(0, 255, 200);
+        let c = a.saturating_sub(b);
+        assert_eq!(c, rgb24(255, 0, 0));
+    }
 }
