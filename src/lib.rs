@@ -43,6 +43,23 @@ impl Rgb24 {
             b: self.b.saturating_sub(other.b),
         }
     }
+    pub fn saturating_scalar_mul(self, scalar: u8) -> Self {
+        Self {
+            r: self.r.saturating_mul(scalar),
+            g: self.g.saturating_mul(scalar),
+            b: self.b.saturating_mul(scalar),
+        }
+    }
+    pub fn saturating_scalar_mul_div(self, numerator: u32, denominator: u32) -> Self {
+        fn single_channel(channel: u8, numerator: u32, denominator: u32) -> u8 {
+            (((channel as u32) * (numerator)) / denominator) as u8
+        }
+        Self {
+            r: single_channel(self.r, numerator, denominator),
+            g: single_channel(self.g, numerator, denominator),
+            b: single_channel(self.b, numerator, denominator),
+        }
+    }
 }
 
 pub const fn rgb24(r: u8, g: u8, b: u8) -> Rgb24 {
@@ -67,5 +84,13 @@ mod test {
         let b = rgb24(0, 255, 200);
         let c = a.saturating_sub(b);
         assert_eq!(c, rgb24(255, 0, 0));
+    }
+
+    #[test]
+    fn mul_div() {
+        assert_eq!(
+            rgb24(1, 2, 3).saturating_scalar_mul_div(1500, 1000),
+            rgb24(1, 3, 4)
+        );
     }
 }
