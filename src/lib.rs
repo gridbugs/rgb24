@@ -38,12 +38,12 @@ impl Rgb24 {
             self.b as f32 / 255.,
         ]
     }
-    pub fn to_f32_rgba(self, opacity: f32) -> [f32; 4] {
+    pub fn to_f32_rgba(self, alpha: f32) -> [f32; 4] {
         [
             self.r as f32 / 255.,
             self.g as f32 / 255.,
             self.b as f32 / 255.,
-            opacity,
+            alpha,
         ]
     }
     pub fn saturating_add(self, other: Self) -> Self {
