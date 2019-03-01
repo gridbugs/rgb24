@@ -14,6 +14,23 @@ impl Rgb24 {
     pub const fn new(r: u8, g: u8, b: u8) -> Self {
         Self { r, g, b }
     }
+    pub const fn new_grey(c: u8) -> Self {
+        Self::new(c, c, c)
+    }
+    pub fn floor(self, min: u8) -> Self {
+        Self {
+            r: self.r.max(min),
+            g: self.g.max(min),
+            b: self.b.max(min),
+        }
+    }
+    pub fn ceil(self, max: u8) -> Self {
+        Self {
+            r: self.r.min(max),
+            g: self.g.min(max),
+            b: self.b.min(max),
+        }
+    }
     pub fn to_f32_rgb(self) -> [f32; 3] {
         [
             self.r as f32 / 255.,
@@ -92,6 +109,10 @@ pub const fn rgb24(r: u8, g: u8, b: u8) -> Rgb24 {
     Rgb24::new(r, g, b)
 }
 
+pub const fn grey24(c: u8) -> Rgb24 {
+    Rgb24::new_grey(c)
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -158,5 +179,20 @@ mod test {
             rgb24(255, 127, 0).normalised_mul(rgb24(10, 20, 30)),
             rgb24(10, 9, 0)
         );
+    }
+
+    #[test]
+    fn grey() {
+        assert_eq!(grey24(37), rgb24(37, 37, 37));
+    }
+
+    #[test]
+    fn floor() {
+        assert_eq!(rgb24(100, 5, 0).floor(10), rgb24(100, 10, 10));
+    }
+
+    #[test]
+    fn ceil() {
+        assert_eq!(rgb24(255, 250, 20).ceil(200), rgb24(200, 200, 20));
     }
 }
