@@ -103,6 +103,16 @@ impl Rgb24 {
             b: single_channel(self.b, other.b),
         }
     }
+    pub fn normalised_scalar_mul(self, scalar: u8) -> Self {
+        fn single_channel(c: u8, scalar: u8) -> u8 {
+            ((c as u32 * scalar as u32) / 255) as u8
+        }
+        Self {
+            r: single_channel(self.r, scalar),
+            g: single_channel(self.g, scalar),
+            b: single_channel(self.b, scalar),
+        }
+    }
 }
 
 pub const fn rgb24(r: u8, g: u8, b: u8) -> Rgb24 {
@@ -194,5 +204,13 @@ mod test {
     #[test]
     fn ceil() {
         assert_eq!(rgb24(255, 250, 20).ceil(200), rgb24(200, 200, 20));
+    }
+
+    #[test]
+    fn normalised_scalar_mul() {
+        assert_eq!(
+            rgb24(255, 128, 0).normalised_scalar_mul(128),
+            rgb24(128, 64, 0)
+        );
     }
 }
