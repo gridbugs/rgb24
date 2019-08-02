@@ -115,102 +115,97 @@ impl Rgb24 {
     }
 }
 
-pub const fn rgb24(r: u8, g: u8, b: u8) -> Rgb24 {
-    Rgb24::new(r, g, b)
-}
-
-pub const fn grey24(c: u8) -> Rgb24 {
-    Rgb24::new_grey(c)
-}
-
 #[cfg(test)]
 mod test {
     use super::*;
 
     #[test]
     fn add() {
-        let a = rgb24(255, 0, 200);
-        let b = rgb24(0, 255, 200);
+        let a = Rgb24::new(255, 0, 200);
+        let b = Rgb24::new(0, 255, 200);
         let c = a.saturating_add(b);
-        assert_eq!(c, rgb24(255, 255, 255));
+        assert_eq!(c, Rgb24::new(255, 255, 255));
     }
 
     #[test]
     fn sub() {
-        let a = rgb24(255, 0, 200);
-        let b = rgb24(0, 255, 200);
+        let a = Rgb24::new(255, 0, 200);
+        let b = Rgb24::new(0, 255, 200);
         let c = a.saturating_sub(b);
-        assert_eq!(c, rgb24(255, 0, 0));
+        assert_eq!(c, Rgb24::new(255, 0, 0));
     }
 
     #[test]
     fn mul_div() {
         assert_eq!(
-            rgb24(1, 2, 3).saturating_scalar_mul_div(1500, 1000),
-            rgb24(1, 3, 4)
+            Rgb24::new(1, 2, 3).saturating_scalar_mul_div(1500, 1000),
+            Rgb24::new(1, 3, 4)
         );
         assert_eq!(
-            rgb24(1, 2, 3).saturating_scalar_mul_div(1500, 1),
-            rgb24(255, 255, 255)
+            Rgb24::new(1, 2, 3).saturating_scalar_mul_div(1500, 1),
+            Rgb24::new(255, 255, 255)
         );
     }
 
     #[test]
     fn mul() {
         assert_eq!(
-            rgb24(20, 40, 60).saturating_scalar_mul(2),
-            rgb24(40, 80, 120),
+            Rgb24::new(20, 40, 60).saturating_scalar_mul(2),
+            Rgb24::new(40, 80, 120),
         );
         assert_eq!(
-            rgb24(20, 40, 60).saturating_scalar_mul(10000),
-            rgb24(255, 255, 255),
+            Rgb24::new(20, 40, 60).saturating_scalar_mul(10000),
+            Rgb24::new(255, 255, 255),
         );
     }
 
     #[test]
     fn div() {
-        assert_eq!(rgb24(20, 40, 60).scalar_div(2), rgb24(10, 20, 30));
-        assert_eq!(rgb24(255, 255, 255).scalar_div(256), rgb24(0, 0, 0));
+        assert_eq!(Rgb24::new(20, 40, 60).scalar_div(2), Rgb24::new(10, 20, 30));
+        assert_eq!(
+            Rgb24::new(255, 255, 255).scalar_div(256),
+            Rgb24::new(0, 0, 0)
+        );
     }
 
     #[test]
     #[should_panic]
     fn div_by_zero() {
-        rgb24(0, 0, 0).scalar_div(0);
+        Rgb24::new(0, 0, 0).scalar_div(0);
     }
 
     #[test]
     fn normalised_mul() {
         assert_eq!(
-            rgb24(255, 255, 255).normalised_mul(rgb24(1, 2, 3)),
-            rgb24(1, 2, 3)
+            Rgb24::new(255, 255, 255).normalised_mul(Rgb24::new(1, 2, 3)),
+            Rgb24::new(1, 2, 3)
         );
         assert_eq!(
-            rgb24(255, 127, 0).normalised_mul(rgb24(10, 20, 30)),
-            rgb24(10, 9, 0)
+            Rgb24::new(255, 127, 0).normalised_mul(Rgb24::new(10, 20, 30)),
+            Rgb24::new(10, 9, 0)
         );
     }
 
     #[test]
     fn grey() {
-        assert_eq!(grey24(37), rgb24(37, 37, 37));
+        assert_eq!(Rgb24::new_grey(37), Rgb24::new(37, 37, 37));
     }
 
     #[test]
     fn floor() {
-        assert_eq!(rgb24(100, 5, 0).floor(10), rgb24(100, 10, 10));
+        assert_eq!(Rgb24::new(100, 5, 0).floor(10), Rgb24::new(100, 10, 10));
     }
 
     #[test]
     fn ceil() {
-        assert_eq!(rgb24(255, 250, 20).ceil(200), rgb24(200, 200, 20));
+        assert_eq!(Rgb24::new(255, 250, 20).ceil(200), Rgb24::new(200, 200, 20));
     }
 
     #[test]
     fn normalised_scalar_mul() {
         assert_eq!(
-            rgb24(255, 128, 0).normalised_scalar_mul(128),
-            rgb24(128, 64, 0)
+            Rgb24::new(255, 128, 0).normalised_scalar_mul(128),
+            Rgb24::new(128, 64, 0)
         );
     }
 }
