@@ -113,6 +113,18 @@ impl Rgb24 {
             b: single_channel(self.b, scalar),
         }
     }
+    pub fn linear_interpolate(self, to: Rgb24, by: u8) -> Self {
+        fn interpolate_channel(from: u8, to: u8, by: u8) -> u8 {
+            let total_delta = to as i32 - from as i32;
+            let current_delta = (total_delta * by as i32) / 255;
+            (from as i32 + current_delta) as u8
+        }
+        Self {
+            r: interpolate_channel(self.r, to.r, by),
+            g: interpolate_channel(self.g, to.g, by),
+            b: interpolate_channel(self.b, to.b, by),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -207,5 +219,14 @@ mod test {
             Rgb24::new(255, 128, 0).normalised_scalar_mul(128),
             Rgb24::new(128, 64, 0)
         );
+    }
+
+    #[test]
+    fn interpolate() {
+        let from = Rgb24::new(0, 255, 100);
+        let to = Rgb24::new(255, 0, 120);
+        assert_eq!(from.linear_interpolate(to, 0), from);
+        assert_eq!(from.linear_interpolate(to, 255), to);
+        assert_eq!(from.linear_interpolate(to, 63), Rgb24::new(63, 192, 104));
     }
 }
