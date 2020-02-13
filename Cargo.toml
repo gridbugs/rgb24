@@ -9,6 +9,7 @@ readme = "README.md"
 homepage = "https://github.com/stevebob/rgb24"
 repository = "https://github.com/stevebob/rgb24"
 documentation = "https://docs.rs/rgb24"
+edition = "2018"
 
 [features]
 serialize = ["serde"]
