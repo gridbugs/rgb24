@@ -2,9 +2,7 @@
 use serde::{Deserialize, Serialize};
 
 #[cfg(feature = "rand")]
-mod sample;
-#[cfg(feature = "rand")]
-pub use sample::*;
+pub mod sample;
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord, Hash)]
 #[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
