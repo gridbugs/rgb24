@@ -95,8 +95,8 @@ impl Rgb24 {
             b: single_channel(self.b, numerator, denominator),
         }
     }
-    pub fn normalised_mul(self, other: Self) -> Self {
-        fn single_channel(a: u8, b: u8) -> u8 {
+    pub const fn normalised_mul(self, other: Self) -> Self {
+        const fn single_channel(a: u8, b: u8) -> u8 {
             ((a as u32 * b as u32) / 255) as u8
         }
         Self {
@@ -105,8 +105,8 @@ impl Rgb24 {
             b: single_channel(self.b, other.b),
         }
     }
-    pub fn normalised_scalar_mul(self, scalar: u8) -> Self {
-        fn single_channel(c: u8, scalar: u8) -> u8 {
+    pub const fn normalised_scalar_mul(self, scalar: u8) -> Self {
+        const fn single_channel(c: u8, scalar: u8) -> u8 {
             ((c as u32 * scalar as u32) / 255) as u8
         }
         Self {
@@ -115,8 +115,8 @@ impl Rgb24 {
             b: single_channel(self.b, scalar),
         }
     }
-    pub fn linear_interpolate(self, to: Rgb24, by: u8) -> Self {
-        fn interpolate_channel(from: u8, to: u8, by: u8) -> u8 {
+    pub const fn linear_interpolate(self, to: Rgb24, by: u8) -> Self {
+        const fn interpolate_channel(from: u8, to: u8, by: u8) -> u8 {
             let total_delta = to as i32 - from as i32;
             let current_delta = (total_delta * by as i32) / 255;
             (from as i32 + current_delta) as u8
