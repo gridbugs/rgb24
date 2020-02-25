@@ -127,6 +127,12 @@ impl Rgb24 {
             b: interpolate_channel(self.b, to.b, by),
         }
     }
+    pub fn min_channel(self) -> u8 {
+        self.r.min(self.g).min(self.b)
+    }
+    pub fn max_channel(self) -> u8 {
+        self.r.max(self.g).max(self.b)
+    }
 }
 
 #[cfg(test)]
