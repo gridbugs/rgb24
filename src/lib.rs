@@ -133,6 +133,9 @@ impl Rgb24 {
     pub fn max_channel(self) -> u8 {
         self.r.max(self.g).max(self.b)
     }
+    pub fn saturating_channel_total(self) -> u8 {
+        self.r.saturating_add(self.g).saturating_add(self.b)
+    }
 }
 
 #[cfg(test)]
