@@ -136,6 +136,13 @@ impl Rgb24 {
     pub fn saturating_channel_total(self) -> u8 {
         self.r.saturating_add(self.g).saturating_add(self.b)
     }
+    pub const fn complement(self) -> Self {
+        Self {
+            r: 255 - self.r,
+            g: 255 - self.g,
+            b: 255 - self.b,
+        }
+    }
 }
 
 #[cfg(test)]
