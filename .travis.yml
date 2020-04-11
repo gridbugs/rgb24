@@ -9,5 +9,7 @@ jobs:
     - rust: nightly
   fast_finish: true
 script:
-  - cargo build --features=serialize
+  - cargo test --features=serialize
+  - cargo test --features=rand
+  - cargo test --all-features
   - cargo test
