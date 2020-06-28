@@ -6,14 +6,14 @@ pub mod sample;
 
 #[derive(Debug, Clone, Copy)]
 #[cfg_attr(feature = "serialize", derive(Serialize, Deserialize))]
-pub struct WeigthsU16 {
+pub struct WeightsU16 {
     r: u16,
     g: u16,
     b: u16,
     sum: u32,
 }
 
-impl WeigthsU16 {
+impl WeightsU16 {
     pub const fn new(r: u16, g: u16, b: u16) -> Self {
         Self {
             r,
@@ -163,7 +163,7 @@ impl Rgb24 {
             b: 255 - self.b,
         }
     }
-    pub const fn weighted_mean_u16(self, weights: WeigthsU16) -> u8 {
+    pub const fn weighted_mean_u16(self, weights: WeightsU16) -> u8 {
         let weighted_sum = self.r as u32 * weights.r as u32
             + self.g as u32 * weights.g as u32
             + self.b as u32 * weights.b as u32;
@@ -277,23 +277,23 @@ mod test {
     #[test]
     fn weighted_mean() {
         assert_eq!(
-            Rgb24::new(14, 120, 201).weighted_mean_u16(WeigthsU16::new(0, 0, 1)),
+            Rgb24::new(14, 120, 201).weighted_mean_u16(WeightsU16::new(0, 0, 1)),
             201
         );
         assert_eq!(
-            Rgb24::new(14, 120, 201).weighted_mean_u16(WeigthsU16::new(299, 587, 114)),
+            Rgb24::new(14, 120, 201).weighted_mean_u16(WeightsU16::new(299, 587, 114)),
             97
         );
         assert_eq!(
-            Rgb24::new(0, 0, 0).weighted_mean_u16(WeigthsU16::new(299, 587, 114)),
+            Rgb24::new(0, 0, 0).weighted_mean_u16(WeightsU16::new(299, 587, 114)),
             0
         );
         assert_eq!(
-            Rgb24::new(255, 255, 255).weighted_mean_u16(WeigthsU16::new(299, 587, 114)),
+            Rgb24::new(255, 255, 255).weighted_mean_u16(WeightsU16::new(299, 587, 114)),
             255
         );
         assert_eq!(
-            Rgb24::new(255, 255, 255).weighted_mean_u16(WeigthsU16::new(
+            Rgb24::new(255, 255, 255).weighted_mean_u16(WeightsU16::new(
                 std::u16::MAX,
                 std::u16::MAX,
                 std::u16::MAX
@@ -305,6 +305,6 @@ mod test {
     #[test]
     #[should_panic]
     fn weighted_mean_zero() {
-        Rgb24::new(1, 2, 3).weighted_mean_u16(WeigthsU16::new(0, 0, 0));
+        Rgb24::new(1, 2, 3).weighted_mean_u16(WeightsU16::new(0, 0, 0));
     }
 }
